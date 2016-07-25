@@ -64,21 +64,20 @@ on e.id = c.cancel_event_id
 left outer join cancel c2
 on e.id = c2.event_id
 left outer join offer o
-on e.id = o.event_id
+on e.id = o.offer_event_id
 left outer join offer o2
-on e.id = o2.offer_event_id
+on e.id = o2.event_id
 order by e.created_at
 ;
-
 
 --  id |      name       | c_evt_id | c_tgt_id | o_evt_id | o_tgt_id |            c_evt             |           ced_evt            | ced_id |            o_evt            |           oed_evt           | o_id
 -- ----+-----------------+----------+----------+----------+----------+------------------------------+------------------------------+--------+-----------------------------+-----------------------------+------
 --   1 | normal event 01 |        6 |        1 |          |          | cancel event 06 for event 01 |                              |        |                             |                             |
 --   1 | normal event 01 |        5 |        1 |          |          | cancel event 05 for event 01 |                              |        |                             |                             |
---   2 | normal event 02 |          |          |          |          |                              |                              |        |                             | offer event 07 for event 02 |    2
+--   2 | normal event 02 |          |          |        7 |        2 |                              |                              |        | offer event 07 for event 02 |                             |
 --   3 | normal event 03 |          |          |          |          |                              |                              |        |                             |                             |
 --   4 | normal event 04 |          |          |          |          |                              |                              |        |                             |                             |
 --   5 | cancel event 05 |          |          |          |          |                              | cancel event 05 for event 01 |      1 |                             |                             |
 --   6 | cancel event 06 |          |          |          |          |                              | cancel event 06 for event 01 |      1 |                             |                             |
---   7 | offer event 07  |          |          |        7 |        2 |                              |                              |        | offer event 07 for event 02 |                             |
+--   7 | offer event 07  |          |          |          |          |                              |                              |        |                             | offer event 07 for event 02 |    2
 -- (8 rows)
