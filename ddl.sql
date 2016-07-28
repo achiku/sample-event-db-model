@@ -81,3 +81,37 @@ order by e.created_at
 --   6 | cancel event 06 |          |          |          |          |                              | cancel event 06 for event 01 |      1 |                             |                             |
 --   7 | offer event 07  |          |          |          |          |                              |                              |        |                             | offer event 07 for event 02 |    2
 -- (8 rows)
+
+
+
+
+select
+  e.id
+  , e.name
+  , json_agg(c.event_id) as c_evt_id
+  , json_agg(o.event_id) as o_evt_id
+from event e
+left outer join cancel c
+on e.id = c.cancel_event_id
+left outer join cancel c2
+on e.id = c2.event_id
+left outer join offer o
+on e.id = o.offer_event_id
+left outer join offer o2
+on e.id = o2.event_id
+group by
+  e.id
+  , e.name
+order by e.created_at
+;
+
+--  id |      name       | c_evt_id | c_tgt_id |   o_evt_id   |   o_tgt_id
+-- ----+-----------------+----------+----------+--------------+--------------
+--   1 | normal event 01 | [6, 5]   | [1, 1]   | [null, null] | [null, null]
+--   2 | normal event 02 | [null]   | [null]   | [7]          | [2]
+--   3 | normal event 03 | [null]   | [null]   | [null]       | [null]
+--   4 | normal event 04 | [null]   | [null]   | [null]       | [null]
+--   5 | cancel event 05 | [null]   | [null]   | [null]       | [null]
+--   6 | cancel event 06 | [null]   | [null]   | [null]       | [null]
+--   7 | offer event 07  | [null]   | [null]   | [null]       | [null]
+-- (7 rows)
